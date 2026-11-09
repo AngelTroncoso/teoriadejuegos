@@ -1,0 +1,39 @@
+{
+  "prisoners_dilemma": {
+    "name": "Dilema del Prisionero",
+    "type": "matrix",
+    "players": 2,
+    "description": "Juego clásico que ilustra el conflicto entre racionalidad individual y colectiva",
+    "strategies": [
+      ["Cooperar", "Traicionar"],
+      ["Cooperar", "Traicionar"]
+    ],
+    "difficulty": "básico"
+  },
+  "battle_of_sexes": {
+    "name": "Batalla de los Sexos",
+    "type": "matrix",
+    "players": 2,
+    "description": "Juego de coordinación con preferencias asimétricas",
+    "strategies": [
+      ["Ópera", "Fútbol"],
+      ["Ópera", "Fútbol"]
+    ],
+    "difficulty": "básico"
+  },
+  "hawk_dove": {
+    "name": "Halcón-Paloma",
+    "type": "evolutionary",
+    "players": 2,
+    "description": "Juego evolutivo de competencia por recursos",
+    "strategies": ["Halcón", "Paloma"],
+    "difficulty": "intermedio"
+  },
+  "ultimatum": {
+    "name": "Juego del Ultimátum",
+    "type": "sequential",
+    "players": 2,
+    "description": "Juego secuencial de propuesta y respuesta",
+    "difficulty": "intermedio"
+  }
+}

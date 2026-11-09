@@ -1,0 +1,70 @@
+{
+  "applications": [
+    {
+      "area": "Economía",
+      "title": "Subastas en Línea",
+      "description": "Diseño de mecanismos de subasta para plataformas como eBay y Google Ads",
+      "key_concepts": ["Subasta de Vickrey", "Revelación de preferencias", "Diseño de mecanismos"],
+      "examples": [
+        "Google AdWords usa subastas de segundo precio generalizadas",
+        "eBay implementa diferentes formatos de subasta",
+        "Subastas de espectro radioeléctrico por gobiernos"
+      ]
+    },
+    {
+      "area": "Tecnología",
+      "title": "Blockchain y Criptomonedas",
+      "description": "Incentivos en protocolos descentralizados",
+      "key_concepts": ["Proof of Work", "Problema de los Generales Bizantinos", "Incentivos"],
+      "examples": [
+        "Minería de Bitcoin",
+        "Consenso en Ethereum",
+        "Protocolos de tolerancia a fallas"
+      ]
+    },
+    {
+      "area": "Ciencias Políticas",
+      "title": "Sistemas Electorales",
+      "description": "Análisis de métodos de votación y sus propiedades",
+      "key_concepts": ["Teorema de Arrow", "Manipulación estratégica", "Sistemas de votación"],
+      "examples": [
+        "Votación por pluralidad vs. votación por ranking",
+        "Sistemas proporcionales",
+        "Referendos y votación directa"
+      ]
+    },
+    {
+      "area": "Biología",
+      "title": "Evolución de Comportamientos",
+      "description": "Explicación de comportamientos animales mediante teoría de juegos",
+      "key_concepts": ["ESS", "Dinámicas evolutivas", "Altruismo recíproco"],
+      "examples": [
+        "Ratio de sexos en poblaciones",
+        "Comportamiento territorial",
+        "Señalización costosa"
+      ]
+    },
+    {
+      "area": "Redes",
+      "title": "Protocolos de Internet",
+      "description": "Diseño de protocolos robustos ante comportamiento egoísta",
+      "key_concepts": ["TCP Congestion Control", "Routing games", "Equilibrio de red"],
+      "examples": [
+        "Control de congestión en redes",
+        "Enrutamiento entre ISPs",
+        "Redes P2P y BitTorrent"
+      ]
+    },
+    {
+      "area": "Negocios",
+      "title": "Estrategia Competitiva",
+      "description": "Decisiones estratégicas en mercados competitivos",
+      "key_concepts": ["Competencia de Cournot", "Competencia de Bertrand", "Entrada al mercado"],
+      "examples": [
+        "Guerras de precios",
+        "Decisiones de capacidad de producción",
+        "Inversión en I+D"
+      ]
+    }
+  ]
+}

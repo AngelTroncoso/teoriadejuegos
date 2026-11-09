@@ -1,0 +1,89 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "title": "Fundamentos de Teoría de Juegos",
+      "level": "Básico",
+      "duration": 30,
+      "topics": [
+        "Definición de juego",
+        "Jugadores y estrategias",
+        "Funciones de pago",
+        "Forma normal y extensiva"
+      ],
+      "learning_objectives": [
+        "Comprender qué es un juego en el contexto matemático",
+        "Identificar componentes de un juego",
+        "Diferenciar entre juegos simultáneos y secuenciales"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Equilibrio de Nash",
+      "level": "Básico",
+      "duration": 45,
+      "topics": [
+        "Definición formal",
+        "Mejores respuestas",
+        "Equilibrios puros",
+        "Equilibrios mixtos"
+      ],
+      "learning_objectives": [
+        "Definir formalmente el equilibrio de Nash",
+        "Encontrar equilibrios en juegos simples",
+        "Entender la importancia y limitaciones del concepto"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Juegos Secuenciales",
+      "level": "Intermedio",
+      "duration": 40,
+      "topics": [
+        "Forma extensiva",
+        "Backward induction",
+        "Equilibrio perfecto en subjuegos",
+        "Credibilidad de amenazas"
+      ],
+      "learning_objectives": [
+        "Analizar juegos con estructura temporal",
+        "Aplicar backward induction",
+        "Identificar amenazas no creíbles"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Teoría de Juegos Evolutiva",
+      "level": "Avanzado",
+      "duration": 50,
+      "topics": [
+        "Dinámicas de replicadores",
+        "ESS (Estrategias Evolutivamente Estables)",
+        "Aplicaciones biológicas",
+        "Convergencia evolutiva"
+      ],
+      "learning_objectives": [
+        "Comprender dinámicas poblacionales",
+        "Identificar estrategias estables evolutivamente",
+        "Aplicar conceptos a problemas biológicos"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Juegos Cooperativos",
+      "level": "Avanzado",
+      "duration": 45,
+      "topics": [
+        "Función característica",
+        "Núcleo (Core)",
+        "Valor de Shapley",
+        "Aplicaciones en reparto justo"
+      ],
+      "learning_objectives": [
+        "Analizar formación de coaliciones",
+        "Calcular repartos justos",
+        "Aplicar a problemas de asignación"
+      ]
+    }
+  ]
+}
