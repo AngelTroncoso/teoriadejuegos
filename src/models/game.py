@@ -96,18 +96,28 @@ class Game(ABC):
         """
         Verifica si un perfil de estrategias es un equilibrio de Nash
         
+        Un perfil (s1, s2, ..., sn) es equilibrio de Nash puro si y solo si:
+        Para cada jugador i: payoff_i(si, s-i) >= payoff_i(si', s-i) para toda estrategia alternativa si'
+        
         Args:
             strategy_profile: Perfil de estrategias a verificar
             
         Returns:
             True si es equilibrio de Nash, False en caso contrario
         """
-        for player in self.players:
-            others = {p.player_id: strategy_profile.get_strategy(p.player_id) 
-                     for p in self.players if p.player_id != player.player_id}
-            best_response = self.get_best_response(player.player_id, others)
-            if best_response != strategy_profile.get_strategy(player.player_id):
+        # Iterar sobre IDs de jugadores en lugar de self.players
+        for player_id in range(self.num_players):
+            # Construir diccionario con estrategias de los otros jugadores
+            others = {pid: strategy_profile.get_strategy(pid) 
+                     for pid in range(self.num_players) if pid != player_id}
+            
+            # Obtener mejor respuesta del jugador dado lo que hacen los demás
+            best_response = self.get_best_response(player_id, others)
+            
+            # Si la mejor respuesta no coincide con la estrategia actual, no es equilibrio
+            if best_response != strategy_profile.get_strategy(player_id):
                 return False
+        
         return True
     
     def play_round(self, strategies: Dict[int, str]) -> Dict[int, float]:
