@@ -37,12 +37,12 @@ def render():
     
     with col2:
         st.markdown("## 📊 Estadísticas")
-        st.metric("Juegos Disponibles", "10+")
-        st.metric("Conceptos Cubiertos", "15+")
-        st.metric("Aplicaciones Reales", "8+")
+        st.metric("Juegos Disponibles", "10+", delta="Interactivos", help="Juegos clásicos y evolutivos")
+        st.metric("Conceptos Cubiertos", "15+", delta="Fundamentales", help="Desde Nash hasta ESS")
+        st.metric("Aplicaciones Reales", "8+", delta="Dominios", help="Economía, tecnología, biología...")
         
         st.markdown("---")
-        st.info("💡 **Tip**: Comienza explorando los juegos clásicos para entender los conceptos fundamentales.")
+        st.success("💡 **Tip**: Comienza explorando los juegos clásicos para entender los conceptos fundamentales.")
     
     st.markdown("---")
     

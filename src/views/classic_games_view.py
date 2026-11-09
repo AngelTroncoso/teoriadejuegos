@@ -4,6 +4,7 @@ Vista de juegos clásicos de teoría de juegos
 
 import streamlit as st
 import numpy as np
+import pandas as pd
 from src.models.matrix_game import (
     create_prisoners_dilemma,
     create_battle_of_sexes,
@@ -17,7 +18,7 @@ from src.models.sequential_game import (
     create_entry_game
 )
 from src.controllers import GameController, NashSolver
-from src.utils import Visualizer, DataLoader
+from src.utils import Visualizer, DataLoader, ux_helpers
 
 
 def render():
@@ -69,6 +70,12 @@ def render_prisoners_dilemma():
     
     st.markdown("## 🚔 Dilema del Prisionero")
     
+    # Hint tutorial
+    ux_helpers.show_tutorial_hint(
+        "Este es uno de los juegos más importantes. Observa cómo la racionalidad individual lleva a un resultado subóptimo.",
+        "pd_hint"
+    )
+    
     st.markdown("""
     **Contexto**: Dos criminales son arrestados y interrogados por separado. 
     Cada uno puede cooperar con el otro (permanecer en silencio) o traicionarlo (confesar).
@@ -93,14 +100,25 @@ def render_prisoners_dilemma():
     
     with col2:
         st.markdown("### Análisis")
-        solver = NashSolver(game)
-        equilibria = solver.find_pure_nash_equilibria()
         
-        st.write(f"**Equilibrios de Nash**: {len(equilibria)}")
+        # Calcular equilibrios con spinner
+        with ux_helpers.show_calculation_spinner("Analizando equilibrios..."):
+            solver = NashSolver(game)
+            equilibria = solver.find_pure_nash_equilibria()
+        
+        # Métricas mejoradas
+        st.metric("Equilibrios de Nash", len(equilibria), help="Número de equilibrios puros encontrados")
         
         for i, eq in enumerate(equilibria):
             st.success(f"**Equilibrio {i+1}**: {eq.strategies}")
-            st.write(f"Pagos: {eq.payoffs}")
+            
+            # Usar métricas comparativas
+            ux_helpers.create_comparison_metrics(
+                "Jugador 1",
+                eq.payoffs[0],
+                "Jugador 2",
+                eq.payoffs[1]
+            )
         
         dominant = game.find_dominant_strategies()
         st.write("**Estrategias Dominantes**:")
@@ -116,30 +134,52 @@ def render_prisoners_dilemma():
     col1, col2 = st.columns(2)
     
     with col1:
-        p1_strategy = st.radio("Estrategia Jugador 1:", game.player_strategies[0], key="pd_p1")
+        p1_strategy = st.radio(
+            "Estrategia Jugador 1:", 
+            game.player_strategies[0], 
+            key="pd_p1",
+            help="Elige la estrategia para el Jugador 1"
+        )
     
     with col2:
-        p2_strategy = st.radio("Estrategia Jugador 2:", game.player_strategies[1], key="pd_p2")
+        p2_strategy = st.radio(
+            "Estrategia Jugador 2:", 
+            game.player_strategies[1], 
+            key="pd_p2",
+            help="Elige la estrategia para el Jugador 2"
+        )
     
-    if st.button("▶️ Jugar Ronda", key="pd_play"):
+    if st.button("▶️ Jugar Ronda", key="pd_play", type="primary", use_container_width=True):
         from src.models.player import StrategyProfile
-        profile = StrategyProfile(strategies={0: p1_strategy, 1: p2_strategy})
-        payoffs = game.calculate_payoffs(profile)
-        is_nash = game.is_nash_equilibrium(profile)
-        is_pareto = game.is_pareto_optimal(profile)
+        
+        with ux_helpers.show_calculation_spinner("Calculando resultados..."):
+            profile = StrategyProfile(strategies={0: p1_strategy, 1: p2_strategy})
+            payoffs = game.calculate_payoffs(profile)
+            is_nash = game.is_nash_equilibrium(profile)
+            is_pareto = game.is_pareto_optimal(profile)
         
         st.markdown("#### Resultados:")
+        
+        # Usar métricas con delta
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("Pago Jugador 1", f"{payoffs[0]:.1f}")
+            st.metric("Pago Jugador 1", f"{payoffs[0]:.1f}", 
+                     delta=f"{payoffs[0] - 2:.1f}" if payoffs[0] != 2 else None,
+                     help="Pago obtenido por el Jugador 1")
         with col2:
-            st.metric("Pago Jugador 2", f"{payoffs[1]:.1f}")
+            st.metric("Pago Jugador 2", f"{payoffs[1]:.1f}",
+                     delta=f"{payoffs[1] - 2:.1f}" if payoffs[1] != 2 else None,
+                     help="Pago obtenido por el Jugador 2")
         with col3:
-            st.metric("Bienestar Total", f"{sum(payoffs.values()):.1f}")
+            total = sum(payoffs.values())
+            st.metric("Bienestar Total", f"{total:.1f}",
+                     delta=f"{total - 6:.1f}" if total != 6 else None,
+                     help="Suma de pagos de ambos jugadores")
         
         if is_nash:
             st.success("✅ Este resultado es un **Equilibrio de Nash**")
+            ux_helpers.show_success_toast("¡Equilibrio de Nash encontrado!")
         else:
             st.warning("❌ Este resultado NO es un equilibrio de Nash")
         
@@ -147,6 +187,31 @@ def render_prisoners_dilemma():
             st.success("✅ Este resultado es **Pareto Óptimo**")
         else:
             st.info("ℹ️ Este resultado NO es Pareto óptimo (existe una mejora posible)")
+        
+        # Guardar en historial
+        if 'game_history' not in st.session_state:
+            st.session_state.game_history = []
+        
+        st.session_state.game_history.append({
+            'game': 'Dilema del Prisionero',
+            'strategies': f"{p1_strategy} vs {p2_strategy}",
+            'payoffs': f"({payoffs[0]}, {payoffs[1]})",
+            'is_nash': is_nash
+        })
+        
+        # Actualizar progreso
+        st.session_state.classic_progress = min(st.session_state.get('classic_progress', 0) + 10, 100)
+    
+    # Mostrar historial si existe
+    if 'game_history' in st.session_state and len(st.session_state.game_history) > 0:
+        with st.expander("📜 Historial de Jugadas", expanded=False):
+            history_df = pd.DataFrame(st.session_state.game_history[-5:])
+            st.dataframe(history_df, use_container_width=True, hide_index=True)
+            
+            # Botón para exportar
+            if len(st.session_state.game_history) > 0:
+                full_df = pd.DataFrame(st.session_state.game_history)
+                ux_helpers.export_results_button(full_df, "historial_juegos.csv")
     
     # Insights
     with st.expander("💡 Insights y Lecciones"):

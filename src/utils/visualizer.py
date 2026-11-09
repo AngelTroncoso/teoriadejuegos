@@ -136,7 +136,34 @@ class Visualizer:
             yaxis=dict(range=[0, 1]),
             hovermode='x unified',
             template='plotly_dark',
-            height=500
+            height=500,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            ),
+            # Añadir botones de interacción
+            updatemenus=[
+                dict(
+                    type="buttons",
+                    direction="left",
+                    buttons=list([
+                        dict(
+                            args=[{"visible": [True] * len(trajectory)}],
+                            label="Todas",
+                            method="restyle"
+                        ),
+                    ]),
+                    pad={"r": 10, "t": 10},
+                    showactive=True,
+                    x=0.0,
+                    xanchor="left",
+                    y=1.15,
+                    yanchor="top"
+                ),
+            ]
         )
         
         fig.add_hline(y=0.5, line_dash="dash", line_color="gray", 

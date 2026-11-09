@@ -4,6 +4,7 @@ Vista de juegos avanzados y análisis evolutivo
 
 import streamlit as st
 import numpy as np
+import pandas as pd
 from src.models.evolutionary_game import (
     create_hawk_dove_game,
     create_rock_paper_scissors_game,
@@ -11,7 +12,7 @@ from src.models.evolutionary_game import (
     Population
 )
 from src.controllers import SimulationController
-from src.utils import Visualizer
+from src.utils import Visualizer, ux_helpers
 
 
 def render():
@@ -19,6 +20,12 @@ def render():
     
     st.markdown('<h1 class="section-header">🧠 Análisis Avanzado</h1>', unsafe_allow_html=True)
     st.markdown("Explora dinámicas evolutivas y simulaciones de poblaciones.")
+    
+    # Hint tutorial
+    ux_helpers.show_tutorial_hint(
+        "Las simulaciones pueden tardar. Comienza con pocas generaciones y aumenta gradualmente.",
+        "advanced_hint"
+    )
     
     st.markdown("---")
     
@@ -107,16 +114,21 @@ def render_hawk_dove():
     with col2:
         generations = st.slider("Generaciones", 10, 200, 100, 10)
     
-    if st.button("▶️ Ejecutar Simulación", key="hd_sim"):
+    if st.button("▶️ Ejecutar Simulación", key="hd_sim", type="primary", use_container_width=True):
         # Crear población inicial
         freq_hawk = initial_hawks / 100.0
         initial_pop = Population(
             strategy_frequencies={"Halcón": freq_hawk, "Paloma": 1 - freq_hawk}
         )
         
-        # Ejecutar simulación
+        # Ejecutar simulación con spinner y barra de progreso
         controller = SimulationController(game)
-        history = controller.run_simulation(initial_pop, generations=generations)
+        
+        with ux_helpers.show_calculation_spinner(f"Simulando {generations} generaciones..."):
+            history = controller.run_simulation(initial_pop, generations=generations)
+        
+        # Mostrar toast de éxito
+        ux_helpers.show_success_toast(f"Simulación completada: {generations} generaciones")
         
         # Obtener trayectoria
         trajectory = controller.calculate_trajectory()
@@ -129,13 +141,15 @@ def render_hawk_dove():
         )
         st.plotly_chart(fig, use_container_width=True)
         
-        # Análisis de convergencia
+        # Análisis de convergencia con métricas mejoradas
         analysis = controller.analyze_convergence()
         
+        st.markdown("#### 📊 Análisis de Convergencia")
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("¿Convergió?", "Sí" if analysis['converged'] else "No")
+            converged_text = "✅ Sí" if analysis['converged'] else "⏳ No"
+            st.metric("¿Convergió?", converged_text)
         
         with col2:
             dominant = analysis.get('dominant_strategy', 'N/A')
@@ -144,6 +158,15 @@ def render_hawk_dove():
         with col3:
             final_fitness = analysis.get('final_fitness', 0)
             st.metric("Fitness Final", f"{final_fitness:.3f}")
+        
+        # Exportar resultados
+        if st.checkbox("📥 Ver/Exportar datos", key="hd_export"):
+            trajectory_df = pd.DataFrame(trajectory)
+            st.dataframe(trajectory_df.head(10), use_container_width=True)
+            ux_helpers.export_results_button(trajectory_df, "halcon_paloma_simulacion.csv")
+        
+        # Actualizar progreso
+        st.session_state.advanced_progress = min(st.session_state.get('advanced_progress', 0) + 15, 100)
     
     with st.expander("💡 Insights"):
         st.markdown(f"""

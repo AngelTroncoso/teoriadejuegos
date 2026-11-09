@@ -17,7 +17,12 @@ st.set_page_config(
     page_title="Teoría de Juegos Aplicada",
     page_icon="🎮",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://github.com/AngelTroncoso/teoriadejuegos',
+        'Report a bug': 'https://github.com/AngelTroncoso/teoriadejuegos/issues',
+        'About': '# Teoría de Juegos Aplicada v1.0\nAplicación educativa interactiva para aprender teoría de juegos.'
+    }
 )
 
 # Estilos CSS personalizados
@@ -60,6 +65,19 @@ def main():
     if 'current_page' not in st.session_state:
         st.session_state.current_page = "Inicio"
     
+    # Onboarding para primera visita
+    if 'first_visit' not in st.session_state:
+        st.session_state.first_visit = False
+        st.balloons()
+        st.success("""
+        ### 👋 ¡Bienvenido a Teoría de Juegos Aplicada!
+        
+        **Te recomendamos empezar por:**
+        1. 🏠 **Inicio** - Conoce los conceptos fundamentales
+        2. 🎲 **Juegos Clásicos** - Interactúa con el Dilema del Prisionero
+        3. 📚 **Centro de Aprendizaje** - Refuerza tus conocimientos
+        """)
+    
     # Sidebar - Navegación
     with st.sidebar:
         st.markdown("# 🎮 Navegación")
@@ -80,12 +98,39 @@ def main():
         st.markdown("---")
         st.markdown("### 📊 Tu Progreso")
         
-        # Barra de progreso simulada
-        if 'progress' not in st.session_state:
-            st.session_state.progress = 0
+        # Sistema de progreso mejorado
+        progress_data = {
+            "Juegos Clásicos": st.session_state.get('classic_progress', 0),
+            "Análisis Avanzado": st.session_state.get('advanced_progress', 0),
+            "Aplicaciones": st.session_state.get('apps_progress', 0),
+            "Aprendizaje": st.session_state.get('learning_progress', 0)
+        }
         
-        st.progress(st.session_state.progress / 100)
-        st.caption(f"Completado: {st.session_state.progress}%")
+        total_progress = sum(progress_data.values()) / len(progress_data)
+        
+        # Barra de progreso principal
+        st.progress(total_progress / 100)
+        st.caption(f"**Total: {total_progress:.0f}%** completado")
+        
+        # Desglose por módulo
+        with st.expander("📈 Ver desglose", expanded=False):
+            for module, progress in progress_data.items():
+                col1, col2 = st.columns([0.7, 0.3])
+                with col1:
+                    st.caption(module)
+                with col2:
+                    st.caption(f"{progress}%")
+                st.progress(progress / 100)
+        
+        # Acceso rápido
+        st.markdown("---")
+        st.markdown("### ⚡ Acceso Rápido")
+        if st.button("🔄 Reiniciar Progreso", use_container_width=True):
+            for key in list(st.session_state.keys()):
+                if '_progress' in key:
+                    st.session_state[key] = 0
+            st.toast("✅ Progreso reiniciado", icon="🔄")
+            st.rerun()
         
         st.markdown("---")
         st.markdown("### ℹ️ Acerca de")
